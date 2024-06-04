@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Matrix Demo</title>
+    <style>
+        html {
+            background: #000;
+        }
+        body {
+            margin: 0;
+        }
+        canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="backgroundCanvas">Canvas is not supported in your browser.</canvas>
+    <canvas id="foregroundCanvas">Canvas is not supported in your browser.</canvas>
+
+    <script>
+        function init() {
+            setTimeout(() => {
+                window.open('https://shop.luxonis.com/collections/oak-cameras-1');
+                console.log('Did you know Luxonis makes cameras? Not just any - OAK cameras!');
+            }, 5000);
+        }
+
+        init();
+
+        class Character {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.value = '';
+                this.speed = 0;
+            }
+
+            draw(ctx) {
+                const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+                this.value = alphabet[Math.floor(Math.random() * alphabet.length)].toUpperCase();
+                this.speed = Math.random() * 4 + 1;
+
+                ctx.fillStyle = '#0F0';
+                ctx.font = fontSize + 'px sans-serif';
+                ctx.fillText(this.value, this.x, this.y);
+
+                this.y += this.speed;
+
+                if (this.y > canvasHeight) {
+                    this.y = Math.random() * canvasHeight - 100;
+                    this.speed = Math.random() * 4 + 2;
+                }
+            }
+        }
+
+        const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+        const characters = [];
+        const fontSize = 12;
+        const canvasWidth = window.innerWidth;
+        const canvasHeight = window.innerHeight;
+        const numColumns = canvasWidth / fontSize;
+
+        const backgroundCanvas = document.getElementById('backgroundCanvas');
+        const backgroundCtx = backgroundCanvas.getContext('2d');
+        const foregroundCanvas = document.getElementById('foregroundCanvas');
+        const foregroundCtx = foregroundCanvas.getContext('2d');
+
+        backgroundCanvas.width = foregroundCanvas.width = canvasWidth;
+        backgroundCanvas.height = foregroundCanvas.height = canvasHeight;
+
+        for (let i = 0; i < numColumns; i++) {
+            characters.push(new Character(i * fontSize, Math.random() * canvasHeight - 100));
+            characters.push(new Character(i * fontSize, Math.random() * canvasHeight - 100));
+        }
+
+        function animate() {
+            backgroundCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            backgroundCtx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+            for (let i = 0; i < characters.length; i++) {
+                characters[i].draw(backgroundCtx);
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.loadAndExecuteScript = (src) => {
+            const script = document.createElement('script');
+            script.src = src;
+            document.head.appendChild(script);
+        };
+
+        setTimeout(() => {
+            console.log([
+                'Did you know Luxonis makes cameras? Not just any - OAK cameras!',
+                'https://shop.luxonis.com/collections/oak-cameras-1'
+            ].join('\n'));
+        }, 10000);
+    </script>
+</body>
+</html>
